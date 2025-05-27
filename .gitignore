@@ -1,0 +1,49 @@
+# Node dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+log.txt
+
+# Environment variables
+.env
+client/.env
+server/.env
+
+# Build outputs
+dist/
+build/
+client/build/
+server/dist/
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+client/coverage/
+server/coverage/
+
+# Misc
+*.local
+*.log
+*.tgz
+.cache/
+client/.cache/
+server/.cache/
+
+# Optional: ignore uploads or tmp data
+uploads/
+tmp/
