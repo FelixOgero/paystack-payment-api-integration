@@ -87,10 +87,13 @@ connectDB();
 const app = express();
 
 // CORS middleware - must come before routes
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+// app.use(cors({
+//   origin: process.env.CLIENT_URL || 'http://localhost:5173',
+//   credentials: true
+// }));
+
+// Allow all origins (for simplicity, adjust in production)
+app.use(cors());
 
 // Special handling for Paystack webhook (raw body) - handle it completely here
 // This MUST come before express.json() middleware
