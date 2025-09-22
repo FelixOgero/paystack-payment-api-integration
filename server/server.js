@@ -75,7 +75,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const paymentRoutes = require('./routes/paymentRoutes');
-const { handleWebhook } = require('./controllers/paymentController');
 const path = require('path');
 
 // Load environment variables
@@ -86,32 +85,20 @@ connectDB();
 
 const app = express();
 
-// CORS middleware - must come before routes
-// app.use(cors({
-//   origin: process.env.CLIENT_URL || 'http://localhost:5173',
-//   credentials: true
-// }));
+// Middleware
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true
+}));
 
-// Allow all origins (for simplicity, adjust in production)
-app.use(cors());
+// IMPORTANT: Handle webhook route with raw body BEFORE express.json()
+// This ensures the webhook route gets the raw body, while other routes get parsed JSON
+app.use('/api/payments/webhook', express.raw({ type: 'application/json' }));
 
-// Special handling for Paystack webhook (raw body) - handle it completely here
-// This MUST come before express.json() middleware
-app.post('/api/payments/webhook', express.raw({type: 'application/json'}), (req, res) => {
-  try {
-    // Parse the raw body for the webhook handler
-    req.body = JSON.parse(req.body.toString());
-    handleWebhook(req, res);
-  } catch (error) {
-    console.error('Webhook parsing error:', error);
-    res.status(400).send('Invalid JSON');
-  }
-});
-
-// Regular JSON middleware for other routes
+// Regular JSON parsing for all other routes
 app.use(express.json());
 
-// API Routes (webhook route is handled above, not in paymentRoutes)
+// API Routes
 app.use('/api/payments', paymentRoutes);
 
 // Serve static assets if in production
@@ -128,9 +115,9 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API is running...');
   });
   
-  // For React routing in development, forward payment callback to the client
+  // For React routing in development, forward all routes to the client
   app.get('/payment/callback', (req, res) => {
-    const queryString = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    const queryString = Object.keys(req.query).length > 0 ? '?' + new URLSearchParams(req.query).toString() : '';
     res.redirect(`${process.env.CLIENT_URL || 'http://localhost:5173'}/payment/callback${queryString}`);
   });
 }

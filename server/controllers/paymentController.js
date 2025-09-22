@@ -121,18 +121,71 @@ exports.verifyPayment = async (req, res) => {
 };
 
 // Process Paystack webhook
+// exports.handleWebhook = async (req, res) => {
+//   try {
+//     // Retrieve the signature from the headers
+//     const signature = req.headers['x-paystack-signature'];
+    
+//     // Validate webhook
+//     if (!validateWebhook(signature, req.body)) {
+//       return res.status(401).send('Invalid signature');
+//     }
+    
+//     // Handle the webhook event
+//     const event = req.body;
+    
+//     if (event.event === 'charge.success') {
+//       const { reference } = event.data;
+      
+//       // Find the transaction in our database
+//       const transaction = await Transaction.findOne({ reference });
+      
+//       if (!transaction) {
+//         return res.status(404).send('Transaction not found');
+//       }
+      
+//       // Update transaction details
+//       transaction.status = 'success';
+//       transaction.paymentMethod = event.data.channel;
+//       transaction.paystackFee = event.data.fees / 100; // Convert from kobo
+      
+//       // If card was used, store the card details
+//       if (event.data.authorization) {
+//         transaction.cardType = event.data.authorization.card_type;
+//         transaction.last4 = event.data.authorization.last4;
+//       }
+      
+//       await transaction.save();
+      
+//       // Perform any other business logic here (e.g., send email, update order status)
+      
+//       return res.status(200).send('Webhook processed successfully');
+//     }
+    
+//     // For other events
+//     return res.status(200).send('Webhook received');
+//   } catch (error) {
+//     console.error('Webhook processing error:', error);
+//     return res.status(500).send('Webhook processing failed');
+//   }
+// };
+
+// Process Paystack webhook
 exports.handleWebhook = async (req, res) => {
   try {
     // Retrieve the signature from the headers
     const signature = req.headers['x-paystack-signature'];
     
+    // Convert raw body to string for validation
+    const body = req.body.toString();
+    
     // Validate webhook
-    if (!validateWebhook(signature, req.body)) {
+    if (!validateWebhook(signature, body)) {
       return res.status(401).send('Invalid signature');
     }
     
-    // Handle the webhook event
-    const event = req.body;
+    // Parse the JSON body
+    const event = JSON.parse(body);
     
     if (event.event === 'charge.success') {
       const { reference } = event.data;
