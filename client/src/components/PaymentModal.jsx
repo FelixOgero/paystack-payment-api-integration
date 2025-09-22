@@ -63,11 +63,11 @@ const PaymentModal = ({
           <div className="secure-payment-note">
             <span role="img" aria-label="lock">🔒</span> Payments are secure and encrypted
           </div>
-          <img 
+          {/* <img 
             src="https://paystack.com/images/paystack-badge-payment-options.png" 
             alt="Paystack Payment Options" 
             className="payment-options-img"
-          />
+          /> */}
         </div>
       </div>
     </div>
