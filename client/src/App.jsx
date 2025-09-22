@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import { PaymentProvider, usePayment } from "./contexts/PaymentContext";
 import PaymentButton from "./components/PaymentButton";
 import PaymentModal from "./components/PaymentModal";
@@ -38,7 +43,7 @@ const PaymentCallback = () => {
       <div className="callback-container error">
         <h2>Payment Verification Failed</h2>
         <p>{error}</p>
-        <button onClick={() => window.location.href = "/"}>
+        <button onClick={() => (window.location.href = "/")}>
           Return to Homepage
         </button>
       </div>
@@ -65,7 +70,7 @@ const PaymentCallback = () => {
             {transaction.paymentMethod || "N/A"}
           </p>
         </div>
-        <button onClick={() => window.location.href = "/"}>
+        <button onClick={() => (window.location.href = "/")}>
           Return to Homepage
         </button>
       </div>
@@ -125,6 +130,23 @@ const Home = () => {
 
           {showHistory && <TransactionHistory />}
         </div>
+
+        <a
+          href="https://github.com/FelixOgero/paystack-payment-api-integration"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "block",
+            marginBottom: "20px",
+            color: "#0366d6",
+            textDecoration: "none",
+            fontWeight: "bold",
+            fontSize: "16px",
+            // textAlign: "center",
+          }}
+        >
+          View GitHub Repository
+        </a>
       </main>
 
       <PaymentModal
