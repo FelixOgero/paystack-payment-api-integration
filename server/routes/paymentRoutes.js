@@ -44,7 +44,14 @@ router.post('/initialize', initializePayment);
 router.get('/verify/:reference', verifyPayment);
 
 // Paystack webhook
-router.post('/webhook', handleWebhook);
+// router.post('/webhook', handleWebhook);
+// Paystack webhook (raw body)
+router.post(
+  '/webhook',
+  express.raw({ type: 'application/json' }),
+  handleWebhook
+);
+
 
 // Get transaction history
 router.get('/transactions', getTransactionHistory);

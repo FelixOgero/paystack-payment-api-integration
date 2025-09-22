@@ -15,19 +15,22 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
-  credentials: true
-}));
+// app.use(cors({
+//   origin: process.env.CLIENT_URL || 'http://localhost:5173',
+//   credentials: true
+// }));
+
+// Allow all origins (for simplicity, adjust in production)
+app.use(cors());
 
 // Special handling for Paystack webhook (raw body)
 // This must come BEFORE the regular routes
-app.use('/api/payments/webhook', express.raw({type: 'application/json'}), (req, res, next) => {
-  if (req.method === 'POST') {
-    req.body = JSON.parse(req.body.toString());
-  }
-  next();
-});
+// app.use('/api/payments/webhook', express.raw({type: 'application/json'}), (req, res, next) => {
+//   if (req.method === 'POST') {
+//     req.body = JSON.parse(req.body.toString());
+//   }
+//   next();
+// });
 
 // API Routes
 app.use('/api/payments', paymentRoutes);
