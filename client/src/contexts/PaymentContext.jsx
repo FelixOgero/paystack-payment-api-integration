@@ -11,7 +11,8 @@ export const PaymentProvider = ({ children }) => {
   const [transaction, setTransaction] = useState(null);
   const [transactions, setTransactions] = useState([]);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  // const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // Initialize payment
   const initializePayment = async (paymentData) => {
