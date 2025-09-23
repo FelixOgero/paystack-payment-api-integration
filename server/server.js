@@ -36,13 +36,48 @@ app.use(cors());
 app.use("/api/payments", paymentRoutes);
 
 // Serve static assets if in production
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static("client/dist"));
+
+//   // For any other route, serve the React app
+//   // app.get('*', (req, res) => {
+//   //   res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
+//   // });
+//   app.use((req, res) => {
+//     res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
+//   });
+// } else {
+//   // Health check route (only in development)
+//   app.get("/", (req, res) => {
+//     res.send("API is running...");
+//   });
+
+//   // For React routing in development, forward all routes to the client
+//   app.get("/payment/callback", (req, res) => {
+//     res.redirect(
+//       `${process.env.CLIENT_URL || "http://localhost:5173"}/payment/callback${
+//         req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : ""
+//       }`
+//     );
+//   });
+// }
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/dist"));
 
+  // For payment callback, always redirect to client
+  app.get("/payment/callback", (req, res) => {
+    res.redirect(
+      `${
+        process.env.CLIENT_URL ||
+        "https://paystack-payment-api-integration.vercel.app"
+      }/payment/callback${
+        req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : ""
+      }`
+    );
+  });
+
   // For any other route, serve the React app
-  // app.get('*', (req, res) => {
-  //   res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
-  // });
   app.use((req, res) => {
     res.sendFile(path.resolve(__dirname, "client", "dist", "index.html"));
   });
